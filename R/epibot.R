@@ -68,7 +68,7 @@ if (nrow(filtered_tweets) > 5) {
 if (!is_empty(epitwitter_tweets)) {
   kp <- !duplicated(epitwitter_tweets$status_id)
   ## only keep rows (observations) with unique status IDs
-  users <- users_data(epitwitter_tweets)[kp, ]
+  users <- users_data(epitwitter_tweets[kp, ])
   ## the rows of users should correspond with the tweets
   epitwitter_tweets <- epitwitter_tweets[kp, ]
   ## restore as users attribute
@@ -87,7 +87,7 @@ if (!is_empty(epitwitter_tweets)) {
     kp <- !duplicated(epitwitter_tweets$status_id)
 
     ## only keep rows (observations) with unique status IDs
-    users <- users_data(epitwitter_tweets)[kp, ]
+    users <- users_data(epitwitter_tweets[kp, ])
 
     ## the rows of users should correspond with the tweets
     epitwitter_tweets <- epitwitter_tweets[kp, ]
