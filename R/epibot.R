@@ -41,26 +41,31 @@ if (!is_empty(epitwitter_tweets)) {
 }
 
 # select tweets to retweet ------------------------------------------------
-# don't retweet tweets from ResearchEpi bot
-filtered_tweets <- epitwitter_tweets %>%
-  filter(tolower(screen_name) != "researchepi")
 
-if (nrow(filtered_tweets) > 5) {
-  tweets_to_retweet <- filtered_tweets %>%
-    sample_n(5) %>%
-    arrange(desc(created_at)) %>%
-    pull(status_id)
+if (!is_empty(epitwitter_tweets)) {
+  # don't retweet tweets from ResearchEpi bot
+  filtered_tweets <- epitwitter_tweets %>%
+    filter(tolower(screen_name) != "researchepi")
 
-  bem <- filtered_tweets$hashtags %>%
-    map_lgl(~ "blackepimatters" %in% tolower(.x))
+  # randomly select tweets
+  if (nrow(filtered_tweets) > 8) {
+    tweets_to_retweet <- filtered_tweets %>%
+      sample_n(8) %>%
+      arrange(desc(created_at)) %>%
+      pull(status_id)
 
-  bem_ids <- filtered_tweets %>%
-    filter(bem) %>%
-    pull(status_id)
+    # always tweet blackepimatters hashtagged tweets
+    bem <- filtered_tweets$hashtags %>%
+      map_lgl(~ "blackepimatters" %in% tolower(.x))
 
-  tweets_to_retweet <- unique(c(bem_ids, tweets_to_retweet))
-} else {
-  tweets_to_retweet <- filtered_tweets$status_id
+    bem_ids <- filtered_tweets %>%
+      filter(bem) %>%
+      pull(status_id)
+
+    tweets_to_retweet <- unique(c(bem_ids, tweets_to_retweet))
+  } else {
+    tweets_to_retweet <- filtered_tweets$status_id
+  }
 }
 
 # bind and save data ------------------------------------------------------
