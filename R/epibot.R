@@ -13,6 +13,14 @@ epitwitter_token <- function() {
   )
 }
 
+# read vector of known spammers
+get_spammers <- function() {
+  readLines("spammers.txt")
+}
+
+# not in
+`%nin%` <- Negate(`%in%`)
+
 # pull new tweets ---------------------------------------------------------
 
 ## search terms
@@ -43,9 +51,9 @@ if (!is_empty(epitwitter_tweets)) {
 # select tweets to retweet ------------------------------------------------
 
 if (!is_empty(epitwitter_tweets)) {
-  # don't retweet tweets from ResearchEpi bot
+  # don't retweet tweets from known spammers
   filtered_tweets <- epitwitter_tweets %>%
-    filter(tolower(screen_name) != "researchepi")
+    filter(tolower(screen_name) %nin% get_spammers())
 
   # randomly select tweets
   if (nrow(filtered_tweets) > 8) {
